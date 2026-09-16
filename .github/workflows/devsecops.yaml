@@ -32,3 +32,18 @@ jobs:
           args: >
             -Dsonar.projectKey=chandru05092001_devsecops-demo-app
             -Dsonar.organization=chandru05092001
+  trivy:
+    name: Trivy Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout application code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          severity: CRITICAL,HIGH
