@@ -25,10 +25,10 @@ jobs:
 
     steps:
       - name: SonarQube Scan
-  uses: SonarSource/sonarqube-scan-action@v6
-  env:
-    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  with:
-    args: >
-      -Dsonar.projectKey=chandru05092001_devsecops-demo-app
-      -Dsonar.organization=chandru05092001
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=chandru05092001_devsecops-demo-app
+            -Dsonar.organization=chandru05092001
