@@ -24,12 +24,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout application code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  uses: SonarSource/sonarqube-scan-action@v6
+  env:
+    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  with:
+    args: >
+      -Dsonar.projectKey=chandru05092001_devsecops-demo-app
+      -Dsonar.organization=chandru05092001
