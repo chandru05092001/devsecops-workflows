@@ -64,6 +64,21 @@ jobs:
           scan-ref: .
           format: table
           severity: CRITICAL,HIGH
+  checkov:
+    name: Checkov IaC Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout application code
+        uses: actions/checkout@v4
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: terraform,kubernetes,cloudformation,dockerfile
+          quiet: true
+          soft_fail: false
   snyk:
     name: Snyk Dependency Scan
     runs-on: ubuntu-latest
