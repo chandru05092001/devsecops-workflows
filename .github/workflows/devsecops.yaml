@@ -11,6 +11,10 @@ on:
         required: true
         type: string
 
+      codeql_languages:
+        required: true
+        type: string
+
 jobs:
   gitleaks:
     name: Gitleaks Secret Scan
@@ -75,7 +79,7 @@ jobs:
         run: snyk test --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        continue-on-error: true
+
   codeql:
     name: CodeQL Security Analysis
     runs-on: ubuntu-latest
@@ -92,7 +96,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
-          languages: python
+          languages: ${{ inputs.codeql_languages }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
