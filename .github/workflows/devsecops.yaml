@@ -2,6 +2,14 @@ name: Central DevSecOps
 
 on:
   workflow_call:
+    inputs:
+      sonar_project_key:
+        required: true
+        type: string
+
+      sonar_organization:
+        required: true
+        type: string
 
 jobs:
   gitleaks:
@@ -24,14 +32,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout application code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=chandru05092001_devsecops-demo-app
-            -Dsonar.organization=chandru05092001
+            -Dsonar.projectKey=${{ inputs.sonar_project_key }}
+            -Dsonar.organization=${{ inputs.sonar_organization }}
   trivy:
     name: Trivy Vulnerability Scan
     runs-on: ubuntu-latest
