@@ -15,10 +15,10 @@ on:
         required: true
         type: string
 
-    docker_image_name:
-      required: false
-      type: string
-      default: ""
+      docker_image_name:
+        required: false
+        type: string
+        default: ""
 
 jobs:
   gitleaks:
