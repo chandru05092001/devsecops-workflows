@@ -70,22 +70,35 @@ jobs:
       - name: Checkout application code
         uses: actions/checkout@v4
 
-      - name: Run Trivy filesystem scan
+      # Generate SARIF report with all severities
+      - name: Generate Trivy SARIF report
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: fs
           scan-ref: .
           format: sarif
           output: trivy-fs-results.sarif
-          severity: CRITICAL,HIGH
-          exit-code: 1
+          exit-code: 0
           ignore-unfixed: true
-      - name: Upload Trivy FS SARIF
+
+      # Upload complete report
+      - name: Upload Trivy SARIF
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: trivy-fs-results
           path: trivy-fs-results.sarif
+
+      # Fail pipeline only for HIGH/CRITICAL
+      - name: Trivy security gate
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: 1
+          ignore-unfixed: true
 
   trivy-image:
     name: Trivy Docker Image Scan
