@@ -110,14 +110,34 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t ${{ inputs.docker_image_name }}:${{ github.sha }} .
+        run: |
+          docker build -t ${{ inputs.docker_image_name }}:${{ github.sha }} .
 
-      - name: Scan Docker image with Trivy
+      # Generate SARIF report — all severities
+      - name: Generate Trivy Image SARIF report
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ inputs.docker_image_name }}:${{ github.sha }}
+          format: sarif
+          output: trivy-image-results.sarif
+          exit-code: 0
+          ignore-unfixed: true
+
+      # Save SARIF as GitHub Actions artifact
+      - name: Upload Trivy Image SARIF
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-image-results
+          path: trivy-image-results.sarif
+
+      # Security gate — only HIGH and CRITICAL fail
+      - name: Trivy Image Security Gate
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ inputs.docker_image_name }}:${{ github.sha }}
           format: table
-          severity: CRITICAL,HIGH
+          severity: HIGH,CRITICAL
           exit-code: 1
           ignore-unfixed: true
 
