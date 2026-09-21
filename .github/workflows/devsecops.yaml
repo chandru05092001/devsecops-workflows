@@ -241,3 +241,37 @@ jobs:
         with:
           name: codeql-results
           path: ${{ steps.codeql.outputs.sarif-output }}
+
+  report:
+    name: Generate DevSecOps HTML Report
+    if: always()
+    needs:
+      - gitleaks
+      - sonarqube
+      - trivy
+      - trivy-image
+      - snyk
+      - codeql
+      - checkov
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout central workflow repository
+        uses: actions/checkout@v4
+
+      - name: Download SARIF artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: reports
+
+      - name: Generate HTML report
+        run: |
+          python3 scripts/generate_report.py
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: devsecops-html-report
+          path: reports/devsecops-report.html
