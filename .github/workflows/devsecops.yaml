@@ -8,8 +8,14 @@ on:
         type: string
 
       sonar_organization:
-        required: true
+        required: false
         type: string
+        default: ""
+
+      sonar_host_url:
+        required: false
+        type: string
+        default: "https://sonarcloud.io"
 
       codeql_languages:
         required: true
@@ -53,7 +59,8 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=${{ inputs.sonar_project_key }}
-            -Dsonar.organization=${{ inputs.sonar_organization }}
+            -Dsonar.host.url=${{ inputs.sonar_host_url }}
+            ${{ inputs.sonar_organization != '' && format('-Dsonar.organization={0}', inputs.sonar_organization) || '' }}
 
   trivy:
     name: Trivy Vulnerability Scan
